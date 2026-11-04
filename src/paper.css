@@ -1,0 +1,113 @@
+/* ───────── Realistic paper: envelope, newspaper, letter ───────── */
+
+/* Envelope (photographic) */
+.envelope-float { display: block; position: relative; width: 292px; perspective: 900px; animation: letter-float 6s ease-in-out infinite; }
+.envelope-tilt { display: block; position: relative; transform: translateY(var(--lift, 0px)) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform .35s cubic-bezier(.16, 1, .3, 1); filter: drop-shadow(0 22px 14px rgba(0, 0, 0, .5)) drop-shadow(0 4px 4px rgba(0, 0, 0, .45)); will-change: transform; }
+.open-letter:hover .envelope-tilt { --lift: -6px; }
+.envelope-photo { display: block; width: 100%; height: auto; user-select: none; -webkit-user-drag: none; pointer-events: none; }
+.envelope-sheen { position: absolute; inset: 0; pointer-events: none; -webkit-mask-size: 100% 100%; mask-size: 100% 100%; mix-blend-mode: soft-light; background: linear-gradient(105deg, transparent 38%, rgba(255, 247, 222, .9) 50%, transparent 62%) 150% 0 / 260% 100% no-repeat; animation: sheen-sweep 7s ease-in-out infinite; }
+.envelope-ink { position: absolute; left: 8%; bottom: 7%; display: flex; flex-direction: column; font: 400 22px/1.02 "Pinyon Script", cursive; color: #1b5a3b; transform: rotate(-6deg); transform-origin: left bottom; mix-blend-mode: multiply; opacity: .92; text-shadow: 0 0 1.2px rgba(22, 70, 45, .75); white-space: nowrap; pointer-events: none; }
+.envelope-ink span:last-child { padding-left: 1em; }
+.seal-glow { position: absolute; aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; background: radial-gradient(circle, rgba(255, 224, 150, .95), rgba(255, 168, 60, .5) 38%, transparent 68%); mix-blend-mode: screen; opacity: 0; pointer-events: none; }
+.is-opening .envelope-tilt { animation: envelope-shake .65s cubic-bezier(.36, .07, .19, .97); }
+.is-opening .seal-glow { animation: seal-crack .65s ease-out; }
+.envelope-spark { position: absolute; width: 5px; height: 5px; background: #e4ca8f; box-shadow: 0 0 9px #dcb760; transform: rotate(45deg); animation: spark-pulse 3s infinite; }
+.envelope-spark-one { left: -22px; top: 38px; }
+.envelope-spark-two { right: -26px; bottom: 18px; width: 3px; height: 3px; animation-delay: -1.3s; }
+
+@keyframes sheen-sweep { 0%, 55% { background-position: 150% 0; } 100% { background-position: -50% 0; } }
+@keyframes envelope-shake {
+  0%, 100% { transform: translateY(var(--lift, 0px)) rotate(0) scale(1); }
+  15% { transform: translateY(-4px) rotate(-3.5deg) scale(1.04); }
+  30% { transform: translateY(-2px) rotate(3deg) scale(1.05); }
+  45% { transform: translateY(-5px) rotate(-2.5deg) scale(1.06); }
+  60% { transform: translateY(-3px) rotate(2deg) scale(1.05); }
+  80% { transform: translateY(-6px) rotate(0) scale(1.07); }
+}
+@keyframes seal-crack { 0% { opacity: 0; scale: .5; } 35% { opacity: 1; } 100% { opacity: 0; scale: 2.6; } }
+
+/* Newspaper: real newsprint texture, torn edge, blackletter masthead, halftone photo */
+.np-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+.newspaper { position: relative; display: block; width: 37.2em; padding: 0; font: 400 10px/1.2 "Old Standard TT", Georgia, serif; color: #2a241b; text-align: center; background: none; border-radius: 0; isolation: isolate; filter: drop-shadow(0 .4em .5em rgba(0, 0, 0, .35)) drop-shadow(0 1.6em 2em rgba(0, 0, 0, .45)); }
+.np-sheet { position: absolute; inset: 0; z-index: -2; background-color: #d9c79a; background-size: cover; background-position: 50% 50%; filter: url(#np-torn); box-shadow: inset 0 0 3.4em rgba(105, 72, 28, .45); }
+.np-light { position: absolute; inset: .6em; z-index: -1; pointer-events: none; background: radial-gradient(ellipse at 50% 108%, rgba(55, 35, 10, .22), transparent 55%), linear-gradient(112deg, rgba(255, 255, 255, .24) 0%, transparent 34%, transparent 62%, rgba(70, 45, 15, .16) 100%); }
+.np-body { position: relative; display: block; padding: 2.5em 2.4em 1.9em; mix-blend-mode: multiply; }
+.np-body > span, .np-photo > span { display: block; }
+.np-strip { display: flex !important; justify-content: space-between; font-size: .74em; letter-spacing: .14em; text-transform: uppercase; padding-bottom: .6em; border-bottom: 1px solid #2a241b; }
+.np-masthead { font-family: "UnifrakturCook", "Old Standard TT", serif; font-weight: 700; font-size: 4.25em; line-height: 1.04; margin: .14em 0 .04em; color: #1c1711; white-space: nowrap; }
+.np-edition { font-size: .78em; letter-spacing: .2em; text-transform: uppercase; padding: .6em 0; border-top: 3px double #2a241b; border-bottom: 1px solid #2a241b; }
+.np-headline { font-weight: 700; font-size: 6.4em; letter-spacing: .02em; line-height: 1; margin: .24em 0 .04em; color: #1c1711; }
+.np-deck { font-style: italic; font-size: 1.42em; line-height: 1.12; margin: 0 .5em .65em; text-wrap: balance; }
+.np-photo { position: relative; display: block; height: 19.4em; margin: 0 .4em; border: .16em solid #241d15; outline: 1px solid #241d15; outline-offset: .28em; background: #8a7f6b; transition: margin-top .55s cubic-bezier(.16, 1, .3, 1); }
+/* While disguised, a gap opens above the photo so the tall hat can rise out of the frame. */
+.np-photo.portrait-disguised { margin-top: 6.3em; }
+.np-photo > img, .np-photo > video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 42%; filter: grayscale(1) sepia(.35) contrast(1.35) brightness(1.1); }
+.np-photo > video { z-index: 1; }
+.np-photo > video::-webkit-media-controls { display: none !important; }
+.np-vignette { position: absolute !important; inset: 0; z-index: 2; pointer-events: none; background: radial-gradient(ellipse, transparent 35%, rgba(40, 28, 14, .5) 100%); }
+.np-photo::after { content: ""; position: absolute; inset: 0; z-index: 3; pointer-events: none; background-image: radial-gradient(circle at 50% 50%, rgba(25, 18, 10, .95) 0 .55px, transparent .95px); background-size: 3px 3px; opacity: .3; mix-blend-mode: multiply; }
+.np-caption { font-size: .98em; font-style: italic; padding: .85em .8em .7em; border-bottom: 1px solid rgba(42, 36, 27, .75); text-wrap: balance; }
+.np-caption em { font-style: normal; font-weight: 700; }
+.np-columns { display: block; column-count: 2; column-gap: 1.3em; column-rule: 1px solid rgba(42, 36, 27, .5); text-align: justify; hyphens: auto; -webkit-hyphens: auto; font-size: 1.04em; line-height: 1.34; padding: .8em .2em .7em; }
+.np-columns::first-letter { float: left; font-family: "UnifrakturCook", serif; font-weight: 700; font-size: 3.5em; line-height: .78; padding: .06em .08em 0 0; }
+.np-notice { display: block; border: 3px double #2a241b; padding: .5em .8em .55em; margin: .3em .5em 0; }
+.np-notice-label { font-size: .72em; letter-spacing: .24em; text-transform: uppercase; }
+.np-notice-fa { font-family: "Vazirmatn", sans-serif; font-weight: 700; font-size: 1.85em; line-height: 1.55; color: #1c1711; }
+.np-foot { display: flex !important; justify-content: space-between; font-size: .72em; letter-spacing: .14em; text-transform: uppercase; margin-top: 1em; padding-top: .75em; border-top: 3px double #2a241b; }
+
+/* Wizard disguise (Riddikulus), sized in em so it stays glued to the photo */
+.wizard-disguise { position: absolute !important; inset: 0; z-index: 4; pointer-events: none; }
+.wizard-hat { position: absolute; left: 13.2em; top: -5.9em; width: 10.6em; height: 8.8em; rotate: 7deg; filter: drop-shadow(1px 2px 2px rgba(0, 0, 0, .45)); }
+.wizard-glasses { position: absolute; left: 16em; top: 2.5em; display: flex; gap: .9em; transform: rotate(-3deg); }
+.wizard-glasses::before { content: ""; position: absolute; left: 3.6em; right: 3.6em; top: 1.7em; height: .22em; background: #1c1711; }
+.wizard-glasses i { display: block; width: 4em; height: 4em; border: .26em solid #1c1711; border-radius: 50%; background: rgba(255, 255, 255, .1); }
+.wizard-glasses i:first-child { margin-right: .35em; }
+
+/* Letter: honey parchment, emerald ink, wax seal */
+.modal-paper.paper-texture { background-color: #dfcd9c; background-image: var(--parchment); background-size: cover; background-position: center; box-shadow: inset 0 0 80px rgba(130, 85, 30, .38); }
+.modal-paper::before { border-color: rgba(85, 60, 25, .3); }
+.letter-body { color: #19402e; font-size: 14.5px; line-height: 2.1; }
+.letter-body h2 { color: #12301f; }
+.letter-body .letter-last-line { color: #1b5a3b; }
+.letter-signoff { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; }
+.letter-signoff .letter-signature { margin: 0; color: #5a3b20; font-size: 14px; }
+.letter-seal { display: block; width: 78px; height: auto; transform: rotate(-9deg); filter: drop-shadow(1px 3px 3px rgba(60, 25, 10, .5)); }
+
+@media (max-width: 1050px) {
+  .newspaper { font-size: 9.4px; }
+}
+@media (max-width: 760px) {
+  .newspaper { font-size: 10px; }
+}
+@media (max-width: 480px) {
+  .envelope-float { width: 236px; }
+  .envelope-ink { font-size: 18px; }
+  .newspaper { font-size: min(10.5px, calc((100vw - 28px) / 37.2)); }
+  .np-body { padding: 2em 1.6em 1.5em; }
+  .np-columns {
+    column-gap: 1.1em;
+    font-size: 1.02em;
+    line-height: 1.38;
+    text-align: left;
+    text-justify: auto;
+    hyphens: auto;
+  }
+  .np-deck { font-size: 1.35em; line-height: 1.15; }
+  .np-caption { font-size: 0.95em; padding: 0.75em 0.6em 0.6em; }
+  .np-notice { padding: 0.4em 0.6em 0.45em; margin: 0.25em 0.3em 0; }
+  .np-notice-fa { font-size: 1.6em; }
+  .letter-seal { width: 52px; }
+  .letter-body { font-size: 13px; line-height: 1.85; }
+}
+@media (max-width: 360px) {
+  .envelope-float { width: 216px; }
+  .envelope-ink { font-size: 16px; }
+  .newspaper { font-size: calc((100vw - 20px) / 37.2); }
+  .np-body { padding: 1.7em 1.2em 1.3em; }
+  .np-columns { column-gap: 0.9em; font-size: 1em; line-height: 1.35; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .envelope-sheen { animation: none; background-position: 150% 0; }
+  .envelope-tilt { transition: none; }
+}
